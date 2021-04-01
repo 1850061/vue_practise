@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<body>
+<div id="WalkingLantern">
+	<p>{{message}}</p>
+	<input type="button" value="跑马灯开始" @click="startMethod" />
+	<input type="button" value="跑马灯结束" @click="endMethod"/>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+<script>
+	let vue=new Vue({
+		el:'#WalkingLantern',
+		data:{
+			message:"跑马灯运行,冲冲冲",
+			intervalId:null
+		},
+		methods:{
+			startMethod:function (){
+				if(this.intervalId==null)
+				{
+					this.intervalId=setInterval(()=>{
+						let start=this.message.substr(0,1);
+						let end=this.message.substr(1);
+						this.message=end+start;
+					},400);
+				}
+			},
+			
+			endMethod:function (){
+				if(this.intervalId!=null)
+				{
+					clearInterval(this.intervalId);
+					this.intervalId=null;
+				}
+			}
+		}
+	})
+</script>
+</html>

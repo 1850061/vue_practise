@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<style>
+		.table {
+			width: 800px;
+			margin: 20px auto;
+			border-collapse: collapse;/*这一行，不能少：表格的两边框合并为一条*/
+		}
+		
+		.table th {
+			background: #0094ff;
+			color: white;
+			font-size: 16px;
+			border: 1px solid black;
+			padding: 5px;
+		}
+		
+		.table tr td {
+			text-align: center;
+			font-size: 16px;
+			padding: 5px;
+			border: 1px solid black;
+		}
+		
+		.form {
+			width: 800px;
+			margin: 20px auto;
+		}
+		
+		.form button {
+			margin-left: 10px;
+		}
+	</style>
+	
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+</head>
+
+<body>
+
+<div id="app">
+	
+	<div class="form">
+		
+		编号：
+		<input type="text" v-model="formData.id"> 名称：
+		<input type="text" v-model="formData.name">
+		
+		<button v-on:click="addData">添加</button>
+		搜索：
+		<input type="text" v-model="keywords">
+	
+	</div>
+	
+	<table class="table">
+		<th>编号</th>
+		<th>名称</th>
+		<th>创建时间</th>
+		<th>操作</th>
+		<tr v-show="list.length == 0">
+			<td colspan="4">列表无数据</td>
+		</tr>
+		<tr v-for="item in search(keywords)">
+			<td>{{item.id}}</td>
+			<td>{{item.name}}</td>
+			<td>{{item.ctime}}</td>
+			<!--绑定delete事件，根据括号里的参数进行删除-->
+			<td>
+				<a href="#" v-on:click="delData(item.id)">删除</a>
+			</td>
+		</tr>
+	</table>
+</div>
+</body>
+<script>
+	let vue=new Vue({
+		el:'#app',
+		data:{
+			list:[],
+			formData: {
+				id:0,
+				name:''
+			},
+			keywords:''
+		},
+		methods:{
+			addData:function (){
+				this.list.push({id:this.formData.id,name:this.formData.name,ctime:new Date()});
+				this.formData.name='';
+				this.formData.id=0;
+			},
+			delData:function(id){
+				if(!confirm("是否删除该数据"))
+					return;
+				let index=this.list.findIndex((item)=>{
+					return item.id==id;
+				});
+				this.list.splice(index,1);
+			},
+			search:function (keywords) {
+				let newList=this.list.filter((item)=>{
+					if(item.name.includes(keywords))
+						return item;
+				})
+				return newList;
+			}
+		}
+	});
+</script>
+</html>

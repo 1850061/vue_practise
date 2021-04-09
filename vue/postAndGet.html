@@ -26,7 +26,7 @@
 			formData:{
 				status:0,
 				username:"",
-				password:0
+				password:""
 			}
 		},
 		methods:{
@@ -52,12 +52,12 @@
 			},
 			postTest:function (){
 				let url='B';
-				this.$http.post(url, this.formData).then(function (response) {
-					if (response.body.status != 0) {
+				this.$http.post(url, JSON.stringify(this.formData),{ emulateJSON: true,contentType:'application/json;charset=UTF-8'}).then(function (response) {
+					if (response.body.Status != 0) {
 						alert(response.body.UserName+" "+response.body.Password);
 						return;
 					}
-					
+					alert(response.body.UserName+" "+response.body.Password);
 					this.formData.name = '';
 					this.formData.password='';
 					
@@ -68,7 +68,7 @@
 				function (error){
 					alert("访问失败");
 					console.log("fail");
-					console.log(error);;
+					console.log(error);
 				};
 			}
 		}

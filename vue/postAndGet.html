@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.2"></script>
+<body>
+<div id="form">
+	<p>username</p><input v-model="formData.username"/>
+	<br/>
+	<p>password</p><input v-model="formData.password"/>
+	<br/>
+	<input type="button" value="get" @click="getTest"/>
+	<input type="button" value="post" @click="postTest"/>
+</div>
+</body>
+<script>
+	Vue.http.options.root = 'https://localhost:5001/';
+	// 全局启用 emulateJSON 选项
+	Vue.http.options.emulateJSON = true;
+	let vue=new Vue({
+		el:"#form",
+		data:{
+			formData:{
+				status:0,
+				username:"",
+				password:0
+			}
+		},
+		methods:{
+			getTest:function (){
+				this.$http.get('B')
+						.then(function (response) {
+							// 1、处理服务器异常信息提示
+							if (response.body.Status != 0) {
+								alert("error"+response.body);
+								return;
+							}
+							
+							// 2、处理正常的数据逻辑
+							alert(response.body.Password+" "+response.body.UserName);
+							console.log(response);
+							
+						},
+						function (error){
+							alert("访问失败");
+							console.log("fail");
+							console.log(error);
+						});
+			},
+			postTest:function (){
+				let url='B';
+				this.$http.post(url, this.formData).then(function (response) {
+					if (response.body.status != 0) {
+						alert(response.body.UserName+" "+response.body.Password);
+						return;
+					}
+					
+					this.formData.name = '';
+					this.formData.password='';
+					
+					// 3、添加完成后，只需要手动再调用一次getlist（将列表数据重新加载一次），即可刷新页面上的数据
+					//this.getlist();
+					
+				}),
+				function (error){
+					alert("访问失败");
+					console.log("fail");
+					console.log(error);
+				};
+			}
+		}
+	})
+</script>
+</html>

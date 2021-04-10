@@ -6,6 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Document</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.2"></script>
 	<style>
 		.table {
 			width: 800px;
@@ -36,9 +38,36 @@
 		.form button {
 			margin-left: 10px;
 		}
+		
+		tr:hover{
+			background-color: #1dc5a3;
+			transition: all 1s ease;
+			
+		}
+		
+		.v-enter,
+		.v-leave-to {
+			opacity: 0;
+			transform: translateY(80px);
+		}
+		
+		.v-enter-active,
+		.v-leave-active {
+			transition: all 0.6s ease;
+		}
+		
+		/* 下面的 .v-move 和 .v-leave-active 配合使用，能够实现列表后续的元素，渐渐地漂上来的效果 */
+		
+		.v-move {
+			transition: all 0.6s ease;
+		}
+		
+		.v-leave-active {
+			position: absolute;
+		}
 	</style>
 	
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
 </head>
 
 <body>
@@ -54,9 +83,8 @@
 		<button v-on:click="addData">添加</button>
 		搜索：
 		<input type="text" v-model="keywords">
-	
 	</div>
-	
+
 	<table class="table">
 		<th>编号</th>
 		<th>名称</th>
@@ -65,15 +93,17 @@
 		<tr v-show="list.length == 0">
 			<td colspan="4">列表无数据</td>
 		</tr>
-		<tr v-for="item in search(keywords)">
-			<td>{{item.id}}</td>
-			<td>{{item.name}}</td>
-			<td>{{item.ctime|dateFormat}}</td>
-			<!--绑定delete事件，根据括号里的参数进行删除-->
-			<td>
-				<a href="#" v-on:click="delData(item.id)">删除</a>
-			</td>
-		</tr>
+		<tbody is="transition-group" appear>
+			<tr v-for="item in search(keywords)" :key="item.id">
+				<td>{{item.id}}</td>
+				<td>{{item.name}}</td>
+				<td>{{item.ctime|dateFormat}}</td>
+				<!--绑定delete事件，根据括号里的参数进行删除-->
+				<td>
+					<a href="#" v-on:click="delData(item.id)">删除</a>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 </div>
 </body>
@@ -102,9 +132,10 @@
 	let vue=new Vue({
 		el:'#app',
 		data:{
-			list:[],
+			list:[{id:1,name:"rzc",ctime:new Date()},{id:2,name:"ajt",ctime:new Date()},
+				{id:3,name:"hqy",ctime:new Date()}],
 			formData: {
-				id:0,
+				id:"",
 				name:''
 			},
 			keywords:''
